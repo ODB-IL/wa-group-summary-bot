@@ -10,7 +10,7 @@ AI-powered WhatsApp bot for group conversation summaries and Q&A.
 
 - 📊 Automatic conversation summaries
 - 💬 Answers questions using RAG technology
-- 🌍 Multi-language support (Hebrew & English)
+- 🌍 Multi-language support
 - 🤖 Powered by AWS Bedrock (Claude AI)
 - 🔒 Secure and GDPR compliant
 
