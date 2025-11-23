@@ -25,11 +25,16 @@ def verify_credentials(credentials: Annotated[HTTPBasicCredentials, Depends(secu
     """Verify basic auth credentials."""
     settings = Settings()
     
+    expected_username = settings.whatsapp_basic_auth_user or "admin"
+    expected_password = settings.whatsapp_basic_auth_password or ""
+    
     correct_username = secrets.compare_digest(
-        credentials.username, settings.whatsapp_basic_auth_user or "admin"
+        credentials.username.encode('utf-8'), 
+        expected_username.encode('utf-8')
     )
     correct_password = secrets.compare_digest(
-        credentials.password, settings.whatsapp_basic_auth_password or ""
+        credentials.password.encode('utf-8'), 
+        expected_password.encode('utf-8')
     )
     
     if not (correct_username and correct_password):
