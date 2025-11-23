@@ -91,7 +91,7 @@ async def setup_page(username: str = Depends(verify_credentials)):
 
 
 @router.get("/whatsapp-qr", response_class=HTMLResponse)
-async def whatsapp_qr_iframe(request: Request, username: str = Depends(verify_credentials)):
+async def whatsapp_qr_iframe(request: Request):
     """
     Proxy endpoint for WhatsApp Web QR code.
     Returns an iframe-friendly page that embeds the WhatsApp Web interface.
