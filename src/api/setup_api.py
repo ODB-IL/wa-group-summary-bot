@@ -10,7 +10,7 @@ from pydantic import BaseModel
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from config import get_async_session
+from api.deps import get_db_async_session
 from models.group import Group
 from whatsapp.client import WhatsAppClient
 
@@ -114,7 +114,7 @@ async def whatsapp_qr_iframe():
 
 @router.get("/api/groups", response_model=List[GroupResponse])
 async def list_groups(
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_db_async_session)
 ):
     """
     List all WhatsApp groups the bot is part of.
@@ -140,7 +140,7 @@ async def list_groups(
 @router.post("/api/groups/update")
 async def update_groups(
     updates: List[GroupUpdate],
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_db_async_session)
 ):
     """
     Update managed status for multiple groups.
@@ -196,7 +196,7 @@ async def whatsapp_status():
 @router.post("/api/groups/{group_jid}/toggle")
 async def toggle_group(
     group_jid: str,
-    session: AsyncSession = Depends(get_async_session)
+    session: AsyncSession = Depends(get_db_async_session)
 ):
     """
     Toggle managed status for a single group.
