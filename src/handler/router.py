@@ -62,7 +62,7 @@ class Router(BaseHandler):
 
     async def _route(self, message: str) -> IntentEnum:
         agent = Agent(
-            model="bedrock:anthropic.claude-3-5-sonnet-20240620-v1:0",
+            model="bedrock:anthropic.claude-3-haiku-20240307-v1:0",
             system_prompt="What is the intent of the message? What does the user want us to help with?",
             output_type=Intent,
         )
@@ -83,7 +83,7 @@ class Router(BaseHandler):
         messages: list[Message] = res.all()
 
         agent = Agent(
-            model="bedrock:anthropic.claude-3-5-sonnet-20240620-v1:0",
+            model="bedrock:anthropic.claude-3-haiku-20240307-v1:0",
             system_prompt="""Summarize the following group chat messages in a few words.
             
             - You MUST state that this is a summary of TODAY's messages. Even if the user asked for a summary of a different time period (in that case, state that you can only summarize today's messages)

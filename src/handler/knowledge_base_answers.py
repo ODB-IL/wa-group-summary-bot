@@ -116,7 +116,7 @@ class KnowledgeBaseAnswers(BaseHandler):
         self, query: str, topics: list[str], sender: str, history: List[Message]
     ) -> AgentRunResult[str]:
         agent = Agent(
-            model="bedrock:anthropic.claude-3-5-sonnet-20240620-v1:0",
+            model="bedrock:anthropic.claude-3-haiku-20240307-v1:0",
             system_prompt="""You are גוטמן (Goodman), an AI agent working for ODB. Based on the topics attached, write a response to the query.
             - Write a casual direct response to the query. no need to repeat the query.
             - Answer in the same language as the query (Hebrew or English).
@@ -149,7 +149,7 @@ class KnowledgeBaseAnswers(BaseHandler):
         self, my_jid: str, message: Message, history: List[Message]
     ) -> AgentRunResult[str]:
         rephrased_agent = Agent(
-            model="bedrock:anthropic.claude-3-5-sonnet-20240620-v1:0",
+            model="bedrock:anthropic.claude-3-haiku-20240307-v1:0",
             system_prompt=f"""Phrase the following message as a short paragraph describing a query from the knowledge base.
             - Translate to English for better search matching (the knowledge base uses English embeddings)
             - Ensure only to include the query itself. The message that includes a lot of information - focus on what the user asks you.
