@@ -60,7 +60,7 @@ class GroupResponse(BaseModel):
 
 
 @router.get("/setup", response_class=HTMLResponse)
-async def setup_page(username: str = Depends(verify_credentials)):
+async def setup_page(request: Request, username: str = Depends(verify_credentials)):
     """
     Serve the setup wizard HTML page.
     This is the main entry point for clients to configure their bot.
@@ -86,6 +86,9 @@ async def setup_page(username: str = Depends(verify_credentials)):
     
     with open(html_path, "r", encoding="utf-8") as f:
         html_content = f.read()
+    
+    # Replace {{HOST}} with actual hostname
+    html_content = html_content.replace("{{HOST}}", request.url.hostname or "localhost")
     
     return HTMLResponse(content=html_content)
 
