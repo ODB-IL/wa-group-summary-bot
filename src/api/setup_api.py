@@ -214,8 +214,11 @@ async def whatsapp_status(request: Request):
         # Try to get devices to verify connection
         try:
             devices = await client.get_devices()
-            connected = devices is not None and len(devices.results) > 0
-        except Exception:
+            connected = devices is not None and hasattr(devices, 'results') and len(devices.results) > 0
+        except Exception as e:
+            # Log the error for debugging
+            import logging
+            logging.error(f"WhatsApp status check failed: {e}")
             connected = False
         
         return {
