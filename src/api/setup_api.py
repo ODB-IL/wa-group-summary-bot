@@ -284,24 +284,25 @@ async def refresh_groups(
         groups_response = await client.get_user_groups()
         
         # Update database
-        for group_data in groups_response.results:
-            statement = select(Group).where(Group.group_jid == group_data.jid)
+        groups_list = groups_response.results.data if groups_response.results else []
+        for group_data in groups_list:
+            statement = select(Group).where(Group.group_jid == group_data.JID)
             result = await session.execute(statement)
             existing_group = result.scalar_one_or_none()
             
             if existing_group:
-                existing_group.group_name = group_data.name
+                existing_group.group_name = group_data.Name
             else:
                 new_group = Group(
-                    group_jid=group_data.jid,
-                    group_name=group_data.name,
+                    group_jid=group_data.JID,
+                    group_name=group_data.Name,
                     managed=False
                 )
                 session.add(new_group)
         
         await session.commit()
         
-        return {"status": "success", "count": len(groups_response.results)}
+        return {"status": "success", "count": len(groups_list)}
     
     except Exception as e:
         await session.rollback()
