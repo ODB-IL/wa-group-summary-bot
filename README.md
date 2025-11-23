@@ -29,7 +29,7 @@ This repository is designed for automated deployment via AWS CloudFormation.
 - **Backend**: FastAPI (Python 3.12)
 - **Database**: PostgreSQL 15 + pgvector
 - **WhatsApp**: whatsapp-web.js
-- **AI**: AWS Bedrock (Claude 3.5 Sonnet v2, Titan Embeddings V2)
+- **AI**: AWS Bedrock (Claude 3 Haiku, Titan Embeddings V2)
 - **Infrastructure**: Docker Compose
 
 ---
