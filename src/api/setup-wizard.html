@@ -292,20 +292,18 @@
             <p>Powered by ODB</p>
         </div>
 
-        <!-- Step 1: WhatsApp Connection -->
+        <!-- WhatsApp Connection Info -->
         <div class="card">
             <h2>Step 1: Connect WhatsApp</h2>
-            <div id="whatsapp-status"></div>
-            <div class="qr-container">
-                <iframe id="whatsapp-iframe" src="/whatsapp-qr"></iframe>
-            </div>
             <div class="alert info">
-                <strong>Instructions:</strong> Open WhatsApp on your phone → Settings → Linked Devices → Link a Device →
-                Scan the QR code above
+                <strong>To connect WhatsApp:</strong> Open <a href="http://{{HOST}}:3000" target="_blank"
+                    style="color: #667eea; font-weight: bold;">http://{{HOST}}:3000</a> in a new tab, login with your
+                credentials, and scan the QR code with your phone.
             </div>
+            <div id="whatsapp-status"></div>
         </div>
 
-        <!-- Step 2: Manage Groups -->
+        <!-- Manage Groups -->
         <div class="card">
             <h2>Step 2: Activate Groups</h2>
             <div id="groups-alert"></div>
