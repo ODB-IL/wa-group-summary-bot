@@ -96,9 +96,14 @@ async def whatsapp_qr_iframe(request: Request):
     Proxy endpoint for WhatsApp Web QR code.
     Returns an iframe-friendly page that embeds the WhatsApp Web interface.
     """
-    # Use the same host as the request but port 3000
+    from config import Settings
+    settings = Settings()
+    
+    # Use the same host as the request but port 3000 with auth
     host = request.url.hostname
-    whatsapp_url = f"http://{host}:3000"
+    username = settings.whatsapp_basic_auth_user or "admin"
+    password = settings.whatsapp_basic_auth_password or ""
+    whatsapp_url = f"http://{username}:{password}@{host}:3000"
     
     # Create a simple HTML page that embeds WhatsApp Web
     html = f"""
