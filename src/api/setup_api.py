@@ -202,18 +202,19 @@ async def update_groups(
 
 
 @router.get("/api/whatsapp/status")
-async def whatsapp_status():
+async def whatsapp_status(request: Request):
     """
     Check WhatsApp connection status.
     Returns whether the bot is connected to WhatsApp Web.
     """
     try:
-        client = WhatsAppClient()
+        # Get WhatsAppClient from app state
+        client: WhatsAppClient = request.app.state.whatsapp
         
-        # Try to get client info to verify connection
+        # Try to get devices to verify connection
         try:
-            info = await client.get_client_info()
-            connected = info is not None
+            devices = await client.get_devices()
+            connected = devices is not None and len(devices.results) > 0
         except Exception:
             connected = False
         
