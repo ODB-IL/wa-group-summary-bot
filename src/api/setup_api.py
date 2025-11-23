@@ -266,3 +266,43 @@ async def toggle_group(
     except Exception as e:
         await session.rollback()
         raise HTTPException(status_code=500, detail=f"Failed to toggle group: {str(e)}")
+
+
+@router.post("/api/groups/refresh")
+async def refresh_groups(
+    request: Request,
+    session: AsyncSession = Depends(get_db_async_session)
+):
+    """
+    Fetch groups from WhatsApp and update database.
+    Called when WhatsApp connection is established.
+    """
+    try:
+        client: WhatsAppClient = request.app.state.whatsapp
+        
+        # Fetch groups from WhatsApp
+        groups_response = await client.get_user_groups()
+        
+        # Update database
+        for group_data in groups_response.results:
+            statement = select(Group).where(Group.group_jid == group_data.jid)
+            result = await session.execute(statement)
+            existing_group = result.scalar_one_or_none()
+            
+            if existing_group:
+                existing_group.group_name = group_data.name
+            else:
+                new_group = Group(
+                    group_jid=group_data.jid,
+                    group_name=group_data.name,
+                    managed=False
+                )
+                session.add(new_group)
+        
+        await session.commit()
+        
+        return {"status": "success", "count": len(groups_response.results)}
+    
+    except Exception as e:
+        await session.rollback()
+        raise HTTPException(status_code=500, detail=f"Failed to refresh groups: {str(e)}")

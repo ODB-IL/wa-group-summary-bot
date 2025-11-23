@@ -305,7 +305,12 @@
 
         <!-- Manage Groups -->
         <div class="card">
-            <h2>Step 2: Activate Groups</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">Step 2: Activate Groups</h2>
+                <button class="btn" onclick="refreshGroups()" style="padding: 8px 16px; font-size: 14px;">
+                    🔄 Refresh Groups
+                </button>
+            </div>
             <div id="groups-alert"></div>
             <div id="groups-container">
                 <div class="loading">
@@ -445,6 +450,8 @@
         }
 
         // Check WhatsApp connection status
+        let wasConnected = false;
+
         async function checkWhatsAppStatus() {
             try {
                 const response = await fetch('/api/whatsapp/status');
@@ -455,13 +462,32 @@
                     statusContainer.innerHTML = `
                         <span class="status connected">✓ Connected</span>
                     `;
+
+                    // If just connected, refresh groups
+                    if (!wasConnected) {
+                        wasConnected = true;
+                        await refreshGroups();
+                    }
                 } else {
                     statusContainer.innerHTML = `
                         <span class="status disconnected">⚠ Not Connected</span>
                     `;
+                    wasConnected = false;
                 }
             } catch (error) {
                 console.error('Failed to check WhatsApp status:', error);
+            }
+        }
+
+        async function refreshGroups() {
+            try {
+                const response = await fetch('/api/groups/refresh', { method: 'POST' });
+                if (response.ok) {
+                    console.log('Groups refreshed successfully');
+                    await loadGroups(); // Reload the groups list
+                }
+            } catch (error) {
+                console.error('Failed to refresh groups:', error);
             }
         }
 
