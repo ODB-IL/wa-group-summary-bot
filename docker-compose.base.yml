@@ -33,7 +33,7 @@ services:
       - APP_PORT=3000
       - APP_OS=Chrome
       - DB_URI=postgres://user:password@postgres:5432/webhook_db?sslmode=disable
-      - APP_BASIC_AUTH=admin:admin
+      - APP_BASIC_AUTH=${WHATSAPP_BASIC_AUTH_USER:-admin}:${WHATSAPP_BASIC_AUTH_PASSWORD:-admin}
       - WHATSAPP_CHAT_STORAGE=false
 
 volumes:
