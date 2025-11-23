@@ -3,18 +3,42 @@ Setup API endpoints for WhatsApp bot configuration.
 This module provides web UI and API endpoints for managing groups.
 """
 
-from typing import List
+from typing import List, Annotated
 from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse, Response
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from pydantic import BaseModel
 from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
+import secrets
 
 from api.deps import get_db_async_session
 from models.group import Group
 from whatsapp.client import WhatsAppClient
+from config import Settings
 
 router = APIRouter()
+security = HTTPBasic()
+
+
+def verify_credentials(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
+    """Verify basic auth credentials."""
+    settings = Settings()
+    
+    correct_username = secrets.compare_digest(
+        credentials.username, settings.whatsapp_basic_auth_user or "admin"
+    )
+    correct_password = secrets.compare_digest(
+        credentials.password, settings.whatsapp_basic_auth_password or ""
+    )
+    
+    if not (correct_username and correct_password):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Basic"},
+        )
+    return credentials.username
 
 
 class GroupUpdate(BaseModel):
@@ -31,7 +55,7 @@ class GroupResponse(BaseModel):
 
 
 @router.get("/setup", response_class=HTMLResponse)
-async def setup_page():
+async def setup_page(username: str = Depends(verify_credentials)):
     """
     Serve the setup wizard HTML page.
     This is the main entry point for clients to configure their bot.
@@ -62,7 +86,7 @@ async def setup_page():
 
 
 @router.get("/whatsapp-qr", response_class=HTMLResponse)
-async def whatsapp_qr_iframe(request: Request):
+async def whatsapp_qr_iframe(request: Request, username: str = Depends(verify_credentials)):
     """
     Proxy endpoint for WhatsApp Web QR code.
     Returns an iframe-friendly page that embeds the WhatsApp Web interface.
@@ -113,7 +137,8 @@ async def whatsapp_qr_iframe(request: Request):
 
 @router.get("/api/groups", response_model=List[GroupResponse])
 async def list_groups(
-    session: AsyncSession = Depends(get_db_async_session)
+    session: AsyncSession = Depends(get_db_async_session),
+    username: str = Depends(verify_credentials)
 ):
     """
     List all WhatsApp groups the bot is part of.
@@ -139,7 +164,8 @@ async def list_groups(
 @router.post("/api/groups/update")
 async def update_groups(
     updates: List[GroupUpdate],
-    session: AsyncSession = Depends(get_db_async_session)
+    session: AsyncSession = Depends(get_db_async_session),
+    username: str = Depends(verify_credentials)
 ):
     """
     Update managed status for multiple groups.
@@ -165,7 +191,7 @@ async def update_groups(
 
 
 @router.get("/api/whatsapp/status")
-async def whatsapp_status():
+async def whatsapp_status(username: str = Depends(verify_credentials)):
     """
     Check WhatsApp connection status.
     Returns whether the bot is connected to WhatsApp Web.
@@ -195,7 +221,8 @@ async def whatsapp_status():
 @router.post("/api/groups/{group_jid}/toggle")
 async def toggle_group(
     group_jid: str,
-    session: AsyncSession = Depends(get_db_async_session)
+    session: AsyncSession = Depends(get_db_async_session),
+    username: str = Depends(verify_credentials)
 ):
     """
     Toggle managed status for a single group.
