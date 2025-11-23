@@ -142,8 +142,7 @@ async def whatsapp_qr_iframe(request: Request):
 
 @router.get("/api/groups", response_model=List[GroupResponse])
 async def list_groups(
-    session: AsyncSession = Depends(get_db_async_session),
-    username: str = Depends(verify_credentials)
+    session: AsyncSession = Depends(get_db_async_session)
 ):
     """
     List all WhatsApp groups the bot is part of.
@@ -169,8 +168,7 @@ async def list_groups(
 @router.post("/api/groups/update")
 async def update_groups(
     updates: List[GroupUpdate],
-    session: AsyncSession = Depends(get_db_async_session),
-    username: str = Depends(verify_credentials)
+    session: AsyncSession = Depends(get_db_async_session)
 ):
     """
     Update managed status for multiple groups.
@@ -196,7 +194,7 @@ async def update_groups(
 
 
 @router.get("/api/whatsapp/status")
-async def whatsapp_status(username: str = Depends(verify_credentials)):
+async def whatsapp_status():
     """
     Check WhatsApp connection status.
     Returns whether the bot is connected to WhatsApp Web.
@@ -226,8 +224,7 @@ async def whatsapp_status(username: str = Depends(verify_credentials)):
 @router.post("/api/groups/{group_jid}/toggle")
 async def toggle_group(
     group_jid: str,
-    session: AsyncSession = Depends(get_db_async_session),
-    username: str = Depends(verify_credentials)
+    session: AsyncSession = Depends(get_db_async_session)
 ):
     """
     Toggle managed status for a single group.
