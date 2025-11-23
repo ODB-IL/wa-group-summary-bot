@@ -4,7 +4,7 @@ This module provides web UI and API endpoints for managing groups.
 """
 
 from typing import List
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from fastapi.responses import HTMLResponse, Response
 from pydantic import BaseModel
 from sqlmodel import select
@@ -62,15 +62,14 @@ async def setup_page():
 
 
 @router.get("/whatsapp-qr", response_class=HTMLResponse)
-async def whatsapp_qr_iframe():
+async def whatsapp_qr_iframe(request: Request):
     """
     Proxy endpoint for WhatsApp Web QR code.
     Returns an iframe-friendly page that embeds the WhatsApp Web interface.
     """
-    from config import Settings
-    
-    settings = Settings()
-    whatsapp_url = settings.whatsapp_host
+    # Use the same host as the request but port 3000
+    host = request.url.hostname
+    whatsapp_url = f"http://{host}:3000"
     
     # Create a simple HTML page that embeds WhatsApp Web
     html = f"""
