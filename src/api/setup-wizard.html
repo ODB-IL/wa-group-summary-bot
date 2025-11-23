@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Bot Setup - ODB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .status.connected {
+            background: #10b981;
+            color: white;
+        }
+
+        .status.disconnected {
+            background: #ef4444;
+            color: white;
+        }
+
+        .qr-container {
+            text-align: center;
+            padding: 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            min-height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qr-container iframe {
+            border: none;
+            width: 100%;
+            height: 500px;
+            border-radius: 8px;
+        }
+
+        .groups-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .group-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 20px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border: 2px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+
+        .group-item:hover {
+            border-color: #667eea;
+            background: #f3f4f6;
+        }
+
+        .group-item.active {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .group-info {
+            flex: 1;
+        }
+
+        .group-name {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #1f2937;
+            margin-bottom: 5px;
+        }
+
+        .group-id {
+            font-size: 0.85em;
+            color: #6b7280;
+            font-family: monospace;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 60px;
+            height: 30px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.4s;
+            border-radius: 30px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: #10b981;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(30px);
+        }
+
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .alert.success {
+            background: #ecfdf5;
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .alert.error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .alert.info {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #6b7280;
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .footer {
+            text-align: center;
+            color: white;
+            margin-top: 40px;
+            opacity: 0.9;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 WhatsApp Bot Setup</h1>
+            <p>Powered by ODB</p>
+        </div>
+
+        <!-- Step 1: WhatsApp Connection -->
+        <div class="card">
+            <h2>Step 1: Connect WhatsApp</h2>
+            <div id="whatsapp-status"></div>
+            <div class="qr-container">
+                <iframe id="whatsapp-iframe" src="/whatsapp-qr"></iframe>
+            </div>
+            <div class="alert info">
+                <strong>Instructions:</strong> Open WhatsApp on your phone → Settings → Linked Devices → Link a Device →
+                Scan the QR code above
+            </div>
+        </div>
+
+        <!-- Step 2: Manage Groups -->
+        <div class="card">
+            <h2>Step 2: Activate Groups</h2>
+            <div id="groups-alert"></div>
+            <div id="groups-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading groups...</p>
+                </div>
+            </div>
+            <button class="btn" id="save-btn" onclick="saveGroups()" disabled>Save Changes</button>
+        </div>
+
+        <div class="footer">
+            <p>Need help? Visit <a href="https://ODB.co.il" target="_blank">ODB.co.il</a></p>
+        </div>
+    </div>
+
+    <script>
+        let groups = [];
+        let hasChanges = false;
+
+        // Load groups on page load
+        async function loadGroups() {
+            try {
+                const response = await fetch('/api/groups');
+                if (!response.ok) throw new Error('Failed to load groups');
+
+                groups = await response.json();
+                renderGroups();
+            } catch (error) {
+                document.getElementById('groups-container').innerHTML = `
+                    <div class="alert error">
+                        Failed to load groups. Please refresh the page.
+                    </div>
+                `;
+            }
+        }
+
+        function renderGroups() {
+            const container = document.getElementById('groups-container');
+
+            if (groups.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        <h3>No Groups Found</h3>
+                        <p>Add the bot to WhatsApp groups to see them here.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const groupsHTML = groups.map(group => `
+                <div class="group-item ${group.managed ? 'active' : ''}" data-id="${group.group_jid}">
+                    <div class="group-info">
+                        <div class="group-name">${escapeHtml(group.group_name)}</div>
+                        <div class="group-id">${group.group_jid}</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" 
+                               ${group.managed ? 'checked' : ''} 
+                               onchange="toggleGroup('${group.group_jid}', this.checked)">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            `).join('');
+
+            container.innerHTML = groupsHTML;
+        }
+
+        function toggleGroup(groupJid, isActive) {
+            const group = groups.find(g => g.group_jid === groupJid);
+            if (group) {
+                group.managed = isActive;
+                hasChanges = true;
+                document.getElementById('save-btn').disabled = false;
+
+                // Update visual state
+                const groupItem = document.querySelector(`[data-id="${groupJid}"]`);
+                if (isActive) {
+                    groupItem.classList.add('active');
+                } else {
+                    groupItem.classList.remove('active');
+                }
+            }
+        }
+
+        async function saveGroups() {
+            const saveBtn = document.getElementById('save-btn');
+            const alertContainer = document.getElementById('groups-alert');
+
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving...';
+
+            try {
+                const response = await fetch('/api/groups/update', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(groups.map(g => ({
+                        group_jid: g.group_jid,
+                        managed: g.managed
+                    })))
+                });
+
+                if (!response.ok) throw new Error('Failed to save');
+
+                alertContainer.innerHTML = `
+                    <div class="alert success">
+                        ✓ Groups updated successfully!
+                    </div>
+                `;
+
+                hasChanges = false;
+                saveBtn.textContent = 'Save Changes';
+
+                setTimeout(() => {
+                    alertContainer.innerHTML = '';
+                }, 3000);
+
+            } catch (error) {
+                alertContainer.innerHTML = `
+                    <div class="alert error">
+                        Failed to save changes. Please try again.
+                    </div>
+                `;
+                saveBtn.disabled = false;
+                saveBtn.textContent = 'Save Changes';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Check WhatsApp connection status
+        async function checkWhatsAppStatus() {
+            try {
+                const response = await fetch('/api/whatsapp/status');
+                const data = await response.json();
+
+                const statusContainer = document.getElementById('whatsapp-status');
+                if (data.connected) {
+                    statusContainer.innerHTML = `
+                        <span class="status connected">✓ Connected</span>
+                    `;
+                } else {
+                    statusContainer.innerHTML = `
+                        <span class="status disconnected">⚠ Not Connected</span>
+                    `;
+                }
+            } catch (error) {
+                console.error('Failed to check WhatsApp status:', error);
+            }
+        }
+
+        // Initialize
+        loadGroups();
+        checkWhatsAppStatus();
+
+        // Refresh status every 10 seconds
+        setInterval(checkWhatsAppStatus, 10000);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,82 @@
+[project]
+name = "wa-llm"
+version = "0.1.0"
+description = ""
+requires-python = ">=3.12"
+dependencies = [
+    "alembic>=1.14.1",
+    "asyncpg>=0.30.0",
+    "boto3>=1.35.0",
+    "cachetools>=5.5.2",
+    "fastapi>=0.115.6",
+    "httpx>=0.28.1",
+    "logfire[fastapi,httpx,sqlalchemy,system-metrics]>=4.11.0",
+    "pgvector>=0.3.6",
+    "pydantic-ai>=1.0.15",
+    "pydantic-settings>=2.7.1",
+    "pydantic>=2.6.1",
+    "sqlalchemy[asyncio]>=2.0.37",
+    "sqlmodel>=0.0.22",
+    "tenacity>=9.0.0",
+    "uvicorn>=0.34.0",
+]
+
+[dependency-groups]
+dev = [
+    "notebook>=7.3.2",
+    "pandas>=2.2.3",
+    "nbstripout>=0.8.1",
+    "whatstk>=0.7.1",
+    "ruff>=0.11.1",
+    "pytest>=8.0.0",
+    "pytest-asyncio>=0.23.5",
+    "pytest-cov>=4.1.0",
+    "pyright>=1.1.401",
+    "tqdm>=4.67.1",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+
+[tool.coverage.report]
+exclude_also = [
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+    "pragma: no cover",
+    "import *",
+    # 1. Exclude an except clause of a specific form:
+    "except ValueError:\\n\\s*assume\\(False\\)",
+    # 2. Comments to turn coverage on and off:
+    "no cover: start(?s:.)*?no cover: stop",
+    # 3. A pragma comment that excludes an entire file:
+    "\\A(?s:.*# pragma: exclude file.*)\\Z",
+    "@pytest\\.fixture.*",
+    "@pytest\\.mark.*",
+]
+
+omit = [
+    "tests/*",
+    "/tmp/*",
+    "/private/*",
+    "*/temporary/*"
+]
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+typeCheckingMode = "basic"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "session"
+log_cli = true
+
+[tool.logfire]
+pydantic_plugin_record = "failure"

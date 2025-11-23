@@ -1,0 +1,50 @@
+[
+    {
+        "subject": "ODB Company Overview",
+        "summary": "ODB is a technology company specializing in cloud infrastructure, DevOps consulting, and AI solutions. We help businesses modernize their infrastructure and implement cutting-edge technologies. Visit https://ODB.co.il for more information or contact us through this WhatsApp bot."
+    },
+    {
+        "subject": "WhatsApp AI Bot - What It Does",
+        "summary": "This is an AI-powered WhatsApp bot (named Goodman/גוטמן) that can: answer questions based on group knowledge, summarize daily conversations, respond in Hebrew and English, learn from group discussions, and provide 24/7 automated support. The bot uses Claude AI (AWS Bedrock) and RAG technology to provide intelligent, context-aware responses."
+    },
+    {
+        "subject": "WhatsApp Bot - How It Works",
+        "summary": "The bot runs on secure AWS cloud infrastructure in Europe (Frankfurt) for GDPR compliance. It uses advanced AI (Claude) to understand and respond to questions in Hebrew and English. All your data stays in your own AWS account - ODB doesn't have access to your conversations. The bot is available 24/7 and learns from your group discussions to provide better answers over time."
+    },
+    {
+        "subject": "WhatsApp Bot - Monthly Costs",
+        "summary": "Budget setup costs approximately €12-18 per month (about $12-18 USD). Breakdown: EC2 t3.micro €8.40/month, EBS storage 20GB €2/month, data transfer €1-2/month, AWS Bedrock usage-based (Claude €0.50-5/month, Titan embeddings €0.10-0.50/month). Total infrastructure €11-12/month plus minimal AI usage costs. Can be optimized further with Reserved Instances (40% savings)."
+    },
+    {
+        "subject": "WhatsApp Bot - Capacity and Scaling",
+        "summary": "Current t3.micro setup supports: 5-10 active WhatsApp groups, 500-1,000 messages per day, 1-2 years of message storage (20GB), and handles moderate bot interactions efficiently. Upgrade to t3.small (€15/month) recommended for: more than 10 groups, over 1,000 messages/day, or faster response times. The system can scale to handle enterprise workloads."
+    },
+    {
+        "subject": "WhatsApp Bot - Features and Capabilities",
+        "summary": "Bot features include: on-demand conversation summaries (last 24 hours), knowledge base Q&A using RAG, multi-language support (Hebrew/English), group management (activate/deactivate per group), persistent WhatsApp session, webhook-based real-time responses, and customizable knowledge base. Bot responds when mentioned with @ in groups."
+    },
+    {
+        "subject": "WhatsApp Bot - Management and Operations",
+        "summary": "Bot management is simple with provided scripts: activate/deactivate groups, view logs, trigger summaries, list all groups, and update security settings. All operations can be done via command-line scripts or API endpoints. No coding required for daily operations. Full documentation and quick reference guides included."
+    },
+    {
+        "subject": "WhatsApp Bot - Security and Compliance",
+        "summary": "Security features: data hosted in EU (Frankfurt) for GDPR compliance, encrypted WhatsApp communication, restricted access via security groups, IAM role-based AWS permissions, no API keys in code, and isolated Docker containers. All data stays in your AWS account. Session data persists securely in Docker volumes."
+    },
+    {
+        "subject": "WhatsApp Bot - Getting Started with ODB",
+        "summary": "ODB handles the complete setup and deployment for you. You only need a WhatsApp number for the bot and an AWS account (we can help set this up too). The bot will be ready to use within 1-2 business days. ODB provides full training, documentation, and ongoing support. No technical knowledge required from your side."
+    },
+    {
+        "subject": "Cloud Infrastructure Services by ODB",
+        "summary": "ODB provides comprehensive cloud infrastructure services including AWS, Azure, and GCP setup. Services include: EC2/VM management, Kubernetes clusters, serverless architectures, database optimization, CI/CD pipelines, Infrastructure as Code (Terraform), container orchestration (Docker, Kubernetes), and cost optimization strategies."
+    },
+    {
+        "subject": "AI and Automation Solutions by ODB",
+        "summary": "ODB specializes in AI integration: ChatGPT and Claude API integration, custom AI chatbots for WhatsApp/Telegram/Slack, RAG (Retrieval-Augmented Generation) systems, vector databases and embeddings, AI-powered automation, and intelligent document processing. We help businesses leverage AI to improve efficiency and customer experience."
+    },
+    {
+        "subject": "ODB Contact and Consultation",
+        "summary": "Contact ODB through: website https://ODB.co.il, this WhatsApp bot (mention @bot for questions), or request consultation through the group. We offer free initial consultations to assess your needs. Flexible pricing models available: project-based, hourly consulting, and monthly retainers."
+    }
+]

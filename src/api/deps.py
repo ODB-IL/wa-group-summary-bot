@@ -1,0 +1,37 @@
+from typing import Annotated
+
+from fastapi import Depends, Request
+from sqlmodel.ext.asyncio.session import AsyncSession
+
+from handler import MessageHandler
+from whatsapp import WhatsAppClient
+from utils.bedrock_embed_text import BedrockEmbeddingClient
+
+
+async def get_db_async_session(request: Request) -> AsyncSession:
+    assert request.app.state.async_session, "AsyncSession generator not initialized"
+    async with request.app.state.async_session() as session:
+        try:
+            yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
+
+
+def get_whatsapp(request: Request) -> WhatsAppClient:
+    assert request.app.state.whatsapp, "WhatsApp client not initialized"
+    return request.app.state.whatsapp
+
+
+def get_text_embebedding(request: Request) -> BedrockEmbeddingClient:
+    assert request.app.state.embedding_client, "text embedding not initialized"
+    return request.app.state.embedding_client
+
+
+async def get_handler(
+    session: Annotated[AsyncSession, Depends(get_db_async_session)],
+    whatsapp: Annotated[WhatsAppClient, Depends(get_whatsapp)],
+    embedding_client: Annotated[BedrockEmbeddingClient, Depends(get_text_embebedding)],
+) -> MessageHandler:
+    return MessageHandler(session, whatsapp, embedding_client)
